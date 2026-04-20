@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vault de Parfum">
+<meta name="theme-color" content="#0a0908">
+<title>Vault de Parfum</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0908;
+  --bg2:#111009;
+  --bg3:#181510;
+  --card:#1a1713;
+  --card2:#201d18;
+  --border:#2e2a22;
+  --border2:#3d3830;
+  --gold:#c9a96e;
+  --gold2:#e8c98a;
+  --gold3:#f5e4c0;
+  --text:#f0ebe0;
+  --text2:#a8a090;
+  --text3:#6b6458;
+  --accent:#8b6914;
+  --teal:#4a9e8a;
+}
+body{background:var(--bg);color:var(--text);font-family:'Jost',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+.app{max-width:420px;margin:0 auto;min-height:100vh;position:relative}
+
+/* Header */
+.header{padding:52px 20px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;letter-spacing:0.12em;color:var(--gold2)}
+.logo span{color:var(--text3);font-style:italic}
+.header-actions{display:flex;gap:8px}
+.icon-btn{width:36px;height:36px;border:1px solid var(--border2);background:var(--card);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--text2)}
+.icon-btn:hover{border-color:var(--gold);color:var(--gold)}
+.icon-btn svg{width:16px;height:16px}
+.search-bar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0 14px;height:40px}
+.search-bar svg{width:14px;height:14px;color:var(--text3);flex-shrink:0}
+.search-bar input{background:none;border:none;outline:none;color:var(--text);font-family:'Jost',sans-serif;font-weight:300;font-size:14px;flex:1;min-width:0}
+.search-bar input::placeholder{color:var(--text3)}
+
+/* Weather Banner */
+.weather-banner{margin:16px 20px;background:var(--card2);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;cursor:pointer;transition:border-color .2s}
+.weather-banner:hover{border-color:var(--gold)}
+.wb-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.wb-city{font-size:11px;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase}
+.wb-temp{font-size:11px;color:var(--gold);font-weight:400}
+.wb-main{display:flex;align-items:center;gap:10px}
+.wb-icon{font-size:20px}
+.wb-desc{font-size:13px;color:var(--text2);line-height:1.5}
+.wb-desc strong{color:var(--gold2);font-weight:500}
+.wb-cta{font-size:11px;color:var(--text3);margin-top:6px;letter-spacing:0.05em}
+
+/* Recommend Panel */
+.recommend-panel{background:var(--card2);border:1px solid rgba(201,169,110,0.25);border-radius:16px;margin:0 20px 20px;padding:16px;display:none}
+.recommend-panel.show{display:block}
+.rp-title{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.rp-list{display:flex;flex-direction:column;gap:8px}
+.rp-item{display:flex;align-items:center;gap:10px;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:10px}
+.rp-rank{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--text3);width:20px;text-align:center;flex-shrink:0}
+.rp-info{flex:1;min-width:0}
+.rp-perfume{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--text)}
+.rp-reason{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.4}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:0 20px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold2);line-height:1}
+.stat-label{font-size:10px;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-top:4px}
+
+/* Filter chips */
+.filters{display:flex;gap:8px;padding:0 20px;margin-bottom:20px;overflow-x:auto;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.chip{padding:6px 14px;border:1px solid var(--border);background:transparent;border-radius:20px;font-size:11px;letter-spacing:0.08em;color:var(--text3);cursor:pointer;white-space:nowrap;transition:all .2s;font-family:'Jost',sans-serif}
+.chip.active{border-color:var(--gold);color:var(--gold);background:rgba(201,169,110,0.08)}
+.chip:hover:not(.active){border-color:var(--border2);color:var(--text2)}
+
+/* Cards */
+.cards{padding:0 20px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .25s}
+.card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.card.featured{border-color:rgba(201,169,110,0.3)}
+.card-inner{display:flex;gap:0}
+.card-img{width:90px;height:110px;flex-shrink:0;background:var(--card2);position:relative;overflow:hidden}
+.card-img-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;opacity:0.85}
+.card-img-overlay{position:absolute;inset:0;background:linear-gradient(to right,transparent 60%,var(--card))}
+.card-body{flex:1;padding:14px 14px 14px 12px;min-width:0}
+.card-brand{font-size:10px;letter-spacing:0.18em;color:var(--text3);text-transform:uppercase;margin-bottom:4px}
+.card-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--text);line-height:1.2;margin-bottom:2px}
+.card-name-en{font-size:11px;color:var(--text3);font-style:italic;margin-bottom:8px}
+.card-notes{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.note-chip{padding:2px 8px;border-radius:10px;font-size:10px;letter-spacing:0.05em}
+.note-top{background:rgba(74,158,138,0.12);color:#6ec4b2;border:1px solid rgba(74,158,138,0.2)}
+.note-mid{background:rgba(201,169,110,0.1);color:var(--gold);border:1px solid rgba(201,169,110,0.2)}
+.note-base{background:rgba(139,105,20,0.15);color:#c4902a;border:1px solid rgba(139,105,20,0.25)}
+.card-meta{display:flex;align-items:center;justify-content:space-between}
+.card-vol{font-size:10px;color:var(--text3)}
+.card-family{font-size:10px;color:var(--text3);font-style:italic}
+.recommend-badge{position:absolute;top:8px;left:8px;background:var(--gold);color:#1a1200;font-size:9px;letter-spacing:0.08em;padding:3px 7px;border-radius:4px;font-weight:500;text-transform:uppercase}
+
+/* Add Button */
+.add-btn{position:fixed;bottom:36px;right:calc(50% - 190px);width:52px;height:52px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 24px rgba(201,169,110,0.35);transition:all .2s;z-index:200}
+.add-btn:hover{background:var(--gold2);transform:scale(1.05)}
+.add-btn svg{width:22px;height:22px;color:#1a1200}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg3);border:1px solid var(--border2);border-top:none;border-radius:20px 20px 0 0;width:100%;max-width:420px;max-height:92vh;overflow-y:auto;padding:24px 20px 48px}
+.modal-handle{width:36px;height:3px;background:var(--border2);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold2);margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--text3);margin-bottom:20px;letter-spacing:0.05em}
+.form-group{margin-bottom:16px}
+.form-label{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;display:block}
+.form-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Jost',sans-serif;font-size:14px;font-weight:300;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.form-input:focus{border-color:var(--gold)}
+.form-input::placeholder{color:var(--text3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ai-btn{width:100%;padding:12px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.3);border-radius:10px;color:var(--gold);font-family:'Jost',sans-serif;font-size:13px;letter-spacing:0.1em;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px}
+.ai-btn:hover{background:rgba(201,169,110,0.18);border-color:var(--gold)}
+.ai-btn:disabled{opacity:0.5;cursor:not-allowed}
+.submit-btn{width:100%;padding:14px;background:var(--gold);border:none;border-radius:10px;color:#1a1200;font-family:'Jost',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.12em;cursor:pointer;transition:all .2s}
+.submit-btn:hover{background:var(--gold2)}
+.cancel-btn{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--text3);font-family:'Jost',sans-serif;font-size:13px;cursor:pointer;margin-top:10px}
+.ai-result{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px;display:none}
+.ai-result.show{display:block}
+.ai-result-label{font-size:10px;letter-spacing:0.15em;color:var(--teal);text-transform:uppercase;margin-bottom:8px}
+.ai-field{margin-bottom:8px}
+.ai-field-key{font-size:10px;color:var(--text3);letter-spacing:0.08em;margin-bottom:3px}
+.ai-field-val{font-size:13px;color:var(--text2)}
+.note-pills{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+
+/* Import */
+.import-area{border:1px dashed var(--border2);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px}
+.import-area:hover{border-color:var(--gold);background:rgba(201,169,110,0.04)}
+.import-icon{font-size:28px;margin-bottom:8px;opacity:0.6}
+.import-text{font-size:13px;color:var(--text3)}
+.import-sub{font-size:11px;color:var(--text3);margin-top:4px;opacity:0.7}
+.import-hint{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:11px;color:var(--text2);line-height:1.8;font-family:monospace;margin-bottom:14px}
+
+/* Detail */
+.detail-header{text-align:center;padding:20px 0;border-bottom:1px solid var(--border)}
+.detail-icon{font-size:56px;margin-bottom:12px}
+.detail-brand{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.detail-name{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--text);margin-bottom:4px}
+.detail-name-en{font-size:13px;color:var(--text3);font-style:italic;margin-bottom:12px}
+.detail-perfumer{font-size:12px;color:var(--gold);letter-spacing:0.08em}
+.notes-section{padding:20px 0;border-bottom:1px solid var(--border)}
+.notes-title{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
+.notes-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.notes-tier{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;width:32px;flex-shrink:0;padding-top:3px}
+.notes-tier.top{color:#6ec4b2}
+.notes-tier.mid{color:var(--gold)}
+.notes-tier.base{color:#c4902a}
+.notes-pills{display:flex;flex-wrap:wrap;gap:5px}
+.notes-pill{padding:4px 10px;border-radius:12px;font-size:11px}
+.notes-pill.top{background:rgba(74,158,138,0.12);color:#6ec4b2;border:1px solid rgba(74,158,138,0.2)}
+.notes-pill.mid{background:rgba(201,169,110,0.1);color:var(--gold);border:1px solid rgba(201,169,110,0.2)}
+.notes-pill.base{background:rgba(139,105,20,0.15);color:#c4902a;border:1px solid rgba(139,105,20,0.25)}
+.detail-meta{padding:20px 0}
+.meta-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.meta-key{font-size:12px;color:var(--text3);letter-spacing:0.05em}
+.meta-val{font-size:13px;color:var(--text)}
+
+/* Loading */
+.loading{display:inline-flex;align-items:center;gap:5px}
+.dot{width:4px;height:4px;border-radius:50%;background:var(--gold);animation:pulse 1.2s ease-in-out infinite;display:inline-block}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty-icon{font-size:40px;margin-bottom:12px;opacity:0.4}
+.empty-text{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--text3);margin-bottom:6px}
+.empty-sub{font-size:12px;opacity:0.7}
+.bottom-space{height:100px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-top">
+      <div class="logo">VAULT <span>de Parfum</span></div>
+      <div class="header-actions">
+        <div class="icon-btn" onclick="openImport()" title="导入CSV">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+        </div>
+        <div class="icon-btn" onclick="toggleRecommend()" title="今日推荐">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input placeholder="搜索品牌、香水名、香调..." id="searchInput" oninput="filterCards()">
+    </div>
+  </div>
+
+  <div class="weather-banner" id="weatherBanner" onclick="toggleRecommend()">
+    <div class="wb-top">
+      <span class="wb-city" id="wbCity">获取位置中...</span>
+      <span class="wb-temp" id="wbTemp">--°C</span>
+    </div>
+    <div class="wb-main">
+      <span class="wb-icon" id="wbIcon">🌡</span>
+      <div>
+        <div class="wb-desc" id="wbDesc">正在加载天气信息...</div>
+        <div class="wb-cta">点击查看今日推荐 →</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="recommend-panel" id="recommendPanel">
+    <div class="rp-title">✦ 今日推荐</div>
+    <div class="rp-list" id="rpList"><div style="font-size:12px;color:var(--text3);padding:8px">加载中...</div></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="totalCount">0</div><div class="stat-label">收藏</div></div>
+    <div class="stat"><div class="stat-num" id="brandCount">0</div><div class="stat-label">品牌</div></div>
+    <div class="stat"><div class="stat-num" id="familyCount">0</div><div class="stat-label">香调系</div></div>
+  </div>
+
+  <div class="filters" id="filtersBar">
+    <div class="chip active" onclick="setFilter(this,'all')">全部</div>
+  </div>
+
+  <div class="cards" id="cardsContainer"></div>
+  <div class="bottom-space"></div>
+
+  <div class="add-btn" onclick="openAdd()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">录入香水</div>
+    <div class="modal-sub">填入品牌与名称后，可使用 AI 自动补全香调信息</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">中文品牌</label><input class="form-input" id="f_brand_cn" placeholder="如：迪奥"></div>
+      <div class="form-group"><label class="form-label">英文品牌</label><input class="form-input" id="f_brand_en" placeholder="如：Dior"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">中文名称</label><input class="form-input" id="f_name_cn" placeholder="如：旷野"></div>
+      <div class="form-group"><label class="form-label">英文名称</label><input class="form-input" id="f_name_en" placeholder="如：Sauvage"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">容量 (ml)</label><input class="form-input" id="f_vol" type="number" placeholder="100"></div>
+      <div class="form-group"><label class="form-label">购入价格 (¥)</label><input class="form-input" id="f_price" type="number" placeholder="800"></div>
+    </div>
+    <button class="ai-btn" id="aiBtn" onclick="runAIComplete()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+      ✦ AI 自动补全香调信息
+    </button>
+    <div class="ai-result" id="aiResult">
+      <div class="ai-result-label">✦ AI 识别结果</div>
+      <div id="aiResultContent"></div>
+    </div>
+    <button class="submit-btn" onclick="addPerfume()">保存香水</button>
+    <button class="cancel-btn" onclick="closeModal('addModal')">取消</button>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">导入 Excel / CSV</div>
+    <div class="modal-sub">将 Excel 另存为 CSV 格式后上传</div>
+    <div class="import-area" onclick="document.getElementById('csvFile').click()">
+      <div class="import-icon">📂</div>
+      <div class="import-text">点击选择 CSV 文件</div>
+      <div class="import-sub">支持 UTF-8 编码的 .csv 文件</div>
+      <input type="file" id="csvFile" accept=".csv" style="display:none" onchange="handleCSV(this)">
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:8px;letter-spacing:0.05em">CSV 列名参考（顺序不限）：</div>
+    <div class="import-hint">中文品牌 / brand_cn<br>英文品牌 / brand_en<br>中文名称 / name_cn<br>英文名称 / name_en<br>容量 / volume<br>价格 / price</div>
+    <button class="cancel-btn" onclick="closeModal('importModal')">关闭</button>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" id="detailContent"></div>
+</div>
+
+<script>
+const ICONS = ['🌿','🌸','🪵','🌺','✨','🍂','🌊','🏔️','🌙','🌹','🌾','🕯️','🫧','🍋','🌴'];
+const SAMPLE = [
+  {id:1,brand_cn:'迪奥',brand_en:'Dior',name_cn:'旷野',name_en:'Sauvage',vol:100,price:890,family:'木质调',perfumer:'François Demachy',top:['佛手柑','胡椒'],mid:['薰衣草','香根草'],base:['雪松','龙涎香'],icon:'🌿'},
+  {id:2,brand_cn:'香奈儿',brand_en:'Chanel',name_cn:'邂逅',name_en:'Chance',vol:50,price:760,family:'花香调',perfumer:'Jacques Polge',top:['粉红胡椒','柠檬'],mid:['茉莉','鸢尾'],base:['白麝香','广藿香'],icon:'🌸'},
+  {id:3,brand_cn:'汤姆福特',brand_en:'Tom Ford',name_cn:'烟草乌木',name_en:'Tobacco Vanille',vol:50,price:1850,family:'东方调',perfumer:'',top:['烟草花','香料'],mid:['香草','可可'],base:['干木头','安息香'],icon:'🪵'},
+];
+
+let perfumes = JSON.parse(localStorage.getItem('vdp_perfumes') || 'null') || [...SAMPLE];
+let currentFilter = 'all';
+let aiData = null;
+let weatherData = null;
+
+function save(){localStorage.setItem('vdp_perfumes', JSON.stringify(perfumes))}
+
+function renderCards(list){
+  const c = document.getElementById('cardsContainer');
+  if(!list.length){
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">🫙</div><div class="empty-text">暂无收藏</div><div class="empty-sub">点击右下角 + 开始录入</div></div>`;
+    return;
+  }
+  c.innerHTML = list.map(p=>`
+    <div class="card ${p.recommended?'featured':''}" onclick="openDetail(${p.id})">
+      <div class="card-inner">
+        <div class="card-img">
+          <div class="card-img-bg">${p.icon||'✨'}</div>
+          <div class="card-img-overlay"></div>
+          ${p.recommended?'<div class="recommend-badge">今日</div>':''}
+        </div>
+        <div class="card-body">
+          <div class="card-brand">${[p.brand_cn,p.brand_en].filter(Boolean).join(' · ')}</div>
+          <div class="card-name">${p.name_cn||p.name_en||'未命名'}</div>
+          ${p.name_cn&&p.name_en?`<div class="card-name-en">${p.name_en}</div>`:'<div class="card-name-en"></div>'}
+          <div class="card-notes">
+            ${(p.top||[]).slice(0,2).map(n=>`<span class="note-chip note-top">${n}</span>`).join('')}
+            ${(p.mid||[]).slice(0,1).map(n=>`<span class="note-chip note-mid">${n}</span>`).join('')}
+            ${(p.base||[]).slice(0,1).map(n=>`<span class="note-chip note-base">${n}</span>`).join('')}
+          </div>
+          <div class="card-meta">
+            <span class="card-vol">${p.vol?p.vol+'ml':''}</span>
+            <span class="card-family">${p.family||''}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateStats(){
+  const brands = new Set(perfumes.map(p=>p.brand_en||p.brand_cn).filter(Boolean));
+  const families = new Set(perfumes.map(p=>p.family).filter(v=>v&&v!=='未分类'));
+  document.getElementById('totalCount').textContent = perfumes.length;
+  document.getElementById('brandCount').textContent = brands.size;
+  document.getElementById('familyCount').textContent = families.size;
+  // Update filter chips
+  const allFamilies = [...families];
+  const bar = document.getElementById('filtersBar');
+  bar.innerHTML = `<div class="chip ${currentFilter==='all'?'active':''}" onclick="setFilter(this,'all')">全部</div>` +
+    allFamilies.map(f=>`<div class="chip ${currentFilter===f?'active':''}" onclick="setFilter(this,'${f}')">${f}</div>`).join('');
+}
+
+function filterCards(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  let list = [...perfumes];
+  if(currentFilter!=='all') list = list.filter(p=>p.family===currentFilter);
+  if(q) list = list.filter(p=>[p.brand_cn,p.brand_en,p.name_cn,p.name_en,p.family,...(p.top||[]),...(p.mid||[]),...(p.base||[])].some(v=>v&&v.toLowerCase().includes(q)));
+  renderCards(list);
+}
+
+function setFilter(el,f){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = f;
+  filterCards();
+}
+
+// Weather
+async function loadWeather(){
+  try{
+    navigator.geolocation.getCurrentPosition(async pos=>{
+      const {latitude:lat, longitude:lon} = pos.coords;
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode,relative_humidity_2m&timezone=auto`);
+      const d = await res.json();
+      const temp = Math.round(d.current.temperature_2m);
+      const humidity = d.current.relative_humidity_2m;
+      const code = d.current.weathercode;
+      const icons = {0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',61:'🌧',71:'🌨',80:'🌦',95:'⛈'};
+      const wIcon = icons[code]||icons[Math.floor(code/10)*10]||'🌡';
+      // Reverse geocode
+      let city = '当前位置';
+      try{
+        const gr = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+        const gd = await gr.json();
+        city = gd.address?.city||gd.address?.town||gd.address?.county||'当前位置';
+      }catch(e){}
+      weatherData = {temp, humidity, code, lat, lon};
+      document.getElementById('wbCity').textContent = city + ' · 今日';
+      document.getElementById('wbTemp').textContent = `${temp}°C · 湿度${humidity}%`;
+      document.getElementById('wbIcon').textContent = wIcon;
+      const rec = getWeatherRec(temp, humidity, code);
+      document.getElementById('wbDesc').innerHTML = `适合 <strong>${rec.families}</strong> — ${rec.reason}`;
+    }, ()=>{
+      document.getElementById('wbCity').textContent = '北京 · 今日';
+      document.getElementById('wbTemp').textContent = '18°C';
+      document.getElementById('wbIcon').textContent = '🌤';
+      document.getElementById('wbDesc').innerHTML = `适合 <strong>木质调 / 东方调</strong> — 请允许位置权限以获取实时天气`;
+    });
+  }catch(e){}
+}
+
+function getWeatherRec(temp, humidity, code){
+  if(temp >= 28){return{families:'柑橘调 / 水生调',reason:'高温下清新调易扩散，避免厚重东方调'}}
+  if(temp >= 20){return{families:'花香调 / 馥奇调',reason:'温暖宜人，花香和草本调最为舒适'}}
+  if(temp >= 12){return{families:'木质调 / 东方调',reason:'微凉天气让香气层次丰富，留香持久'}}
+  return{families:'东方调 / 皮革调',reason:'寒冷天气适合厚重温暖的香调，贴近肌肤'}
+}
+
+async function toggleRecommend(){
+  const p = document.getElementById('recommendPanel');
+  if(!p.classList.toggle('show')) return;
+  const list = document.getElementById('rpList');
+  list.innerHTML = '<div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  if(!perfumes.length){list.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px">还没有收藏香水，先录入几瓶吧～</div>';return;}
+  try{
+    const weather = weatherData ? `当前温度${weatherData.temp}°C，湿度${weatherData.humidity}%，天气代码${weatherData.code}` : '春日，气温约18°C，晴朗';
+    const perfumeList = perfumes.slice(0,30).map(p=>`${p.name_cn||p.name_en}（${p.family||'未知香调'}，前调:${(p.top||[]).join('/')||'未知'}，基调:${(p.base||[]).join('/')||'未知'}）`).join('\n');
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        messages:[{role:'user',content:`根据今日天气，从我的香水收藏中推荐最适合今天喷的3瓶，并给出简短原因（每条不超过25字）。
+
+天气：${weather}
+
+我的香水收藏：
+${perfumeList}
+
+请以JSON格式回复，不含任何其他文字：
+{"recommendations":[{"name":"香水名称","reason":"推荐原因"}]}`}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
+    const result = JSON.parse(text);
+    list.innerHTML = result.recommendations.map((r,i)=>`
+      <div class="rp-item">
+        <div class="rp-rank">${i+1}</div>
+        <div class="rp-info">
+          <div class="rp-perfume">${r.name}</div>
+          <div class="rp-reason">${r.reason}</div>
+        </div>
+      </div>
+    `).join('');
+    perfumes.forEach(p=>p.recommended=result.recommendations.some(r=>r.name.includes(p.name_cn||p.name_en)||r.name.includes(p.name_en||p.name_cn)));
+    save();filterCards();
+  }catch(e){
+    list.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px">推荐加载失败，请稍后重试</div>';
+  }
+}
+
+function openDetail(id){
+  const p = perfumes.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('detailContent').innerHTML = `
+    <div class="modal-handle"></div>
+    <div class="detail-header">
+      <div class="detail-icon">${p.icon||'✨'}</div>
+      <div class="detail-brand">${[p.brand_cn,p.brand_en].filter(Boolean).join(' · ')}</div>
+      <div class="detail-name">${p.name_cn||p.name_en||'未命名'}</div>
+      ${p.name_cn&&p.name_en?`<div class="detail-name-en">${p.name_en}</div>`:''}
+      ${p.perfumer?`<div class="detail-perfumer">调香师 · ${p.perfumer}</div>`:''}
+    </div>
+    <div class="notes-section">
+      <div class="notes-title">香调构成</div>
+      ${(p.top&&p.top.length)?`<div class="notes-row"><span class="notes-tier top">前调</span><div class="notes-pills">${p.top.map(n=>`<span class="notes-pill top">${n}</span>`).join('')}</div></div>`:''}
+      ${(p.mid&&p.mid.length)?`<div class="notes-row"><span class="notes-tier mid">中调</span><div class="notes-pills">${p.mid.map(n=>`<span class="notes-pill mid">${n}</span>`).join('')}</div></div>`:''}
+      ${(p.base&&p.base.length)?`<div class="notes-row"><span class="notes-tier base">基调</span><div class="notes-pills">${p.base.map(n=>`<span class="notes-pill base">${n}</span>`).join('')}</div></div>`:''}
+    </div>
+    <div class="detail-meta">
+      <div class="meta-row"><span class="meta-key">香调家族</span><span class="meta-val">${p.family||'—'}</span></div>
+      <div class="meta-row"><span class="meta-key">容量</span><span class="meta-val">${p.vol?p.vol+' ml':'—'}</span></div>
+      <div class="meta-row"><span class="meta-key">购入价格</span><span class="meta-val">${p.price?'¥'+p.price:'—'}</span></div>
+    </div>
+    <button onclick="closeModal('detailModal')" class="cancel-btn">关闭</button>
+  `;
+  document.getElementById('detailModal').classList.add('show');
+}
+
+function openAdd(){
+  aiData=null;
+  document.getElementById('aiResult').classList.remove('show');
+  ['f_brand_cn','f_brand_en','f_name_cn','f_name_en','f_vol','f_price'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('addModal').classList.add('show');
+}
+function openImport(){document.getElementById('importModal').classList.add('show')}
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')}));
+
+async function runAIComplete(){
+  const brand = document.getElementById('f_brand_en').value||document.getElementById('f_brand_cn').value;
+  const name = document.getElementById('f_name_en').value||document.getElementById('f_name_cn').value;
+  if(!brand||!name){alert('请先填写品牌和香水名称');return;}
+  const btn = document.getElementById('aiBtn');
+  btn.innerHTML = '<div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div> AI 识别中...';
+  btn.disabled = true;
+  try{
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:800,
+        messages:[{role:'user',content:`请提供以下香水的详细信息，仅返回JSON，不含任何其他文字：
+品牌：${brand}，香水名：${name}
+格式：{"perfumer":"调香师（不确定填空字符串）","family":"香调家族","top":["前调1","前调2","前调3"],"mid":["中调1","中调2","中调3"],"base":["基调1","基调2","基调3"]}`}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
+    aiData = JSON.parse(text);
+    document.getElementById('aiResultContent').innerHTML = `
+      <div class="ai-field"><div class="ai-field-key">调香师</div><div class="ai-field-val">${aiData.perfumer||'未知'}</div></div>
+      <div class="ai-field"><div class="ai-field-key">香调家族</div><div class="ai-field-val">${aiData.family}</div></div>
+      <div class="ai-field"><div class="ai-field-key">前调</div><div class="note-pills">${aiData.top.map(n=>`<span class="note-chip note-top">${n}</span>`).join('')}</div></div>
+      <div class="ai-field"><div class="ai-field-key">中调</div><div class="note-pills">${aiData.mid.map(n=>`<span class="note-chip note-mid">${n}</span>`).join('')}</div></div>
+      <div class="ai-field"><div class="ai-field-key">基调</div><div class="note-pills">${aiData.base.map(n=>`<span class="note-chip note-base">${n}</span>`).join('')}</div></div>
+    `;
+    document.getElementById('aiResult').classList.add('show');
+  }catch(e){alert('AI 识别失败，请手动填写');}
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg> ✦ AI 自动补全香调信息';
+  btn.disabled = false;
+}
+
+function addPerfume(){
+  const p = {
+    id: Date.now(),
+    brand_cn: document.getElementById('f_brand_cn').value.trim(),
+    brand_en: document.getElementById('f_brand_en').value.trim(),
+    name_cn: document.getElementById('f_name_cn').value.trim(),
+    name_en: document.getElementById('f_name_en').value.trim(),
+    vol: parseInt(document.getElementById('f_vol').value)||0,
+    price: parseInt(document.getElementById('f_price').value)||0,
+    family: aiData?.family||'未分类',
+    perfumer: aiData?.perfumer||'',
+    top: aiData?.top||[], mid: aiData?.mid||[], base: aiData?.base||[],
+    icon: ICONS[Math.floor(Math.random()*ICONS.length)],
+    recommended: false
+  };
+  if(!p.brand_cn&&!p.brand_en&&!p.name_cn&&!p.name_en){alert('请至少填写品牌或名称');return;}
+  perfumes.unshift(p);
+  save(); updateStats(); filterCards();
+  closeModal('addModal');
+  aiData = null;
+}
+
+function handleCSV(input){
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const lines = e.target.result.split('\n').filter(Boolean);
+    if(lines.length<2){alert('文件内容为空或格式不正确');return;}
+    const headers = lines[0].split(',').map(h=>h.trim().toLowerCase().replace(/"/g,''));
+    const map = {
+      brand_cn:['中文品牌','brand_cn','品牌中文','品牌'],
+      brand_en:['英文品牌','brand_en','品牌英文'],
+      name_cn:['中文名称','name_cn','香水中文','名称'],
+      name_en:['英文名称','name_en','香水英文'],
+      vol:['容量','volume','vol','ml'],
+      price:['价格','price','购入价格','购入价']
+    };
+    const idx = {};
+    for(const [key,aliases] of Object.entries(map)){
+      for(const alias of aliases){const i=headers.indexOf(alias);if(i>=0){idx[key]=i;break;}}
+    }
+    let added=0;
+    for(let i=1;i<lines.length;i++){
+      const cols = lines[i].split(',').map(c=>c.trim().replace(/^"|"$/g,''));
+      const p = {
+        id:Date.now()+i,
+        brand_cn:cols[idx.brand_cn]||'',brand_en:cols[idx.brand_en]||'',
+        name_cn:cols[idx.name_cn]||'',name_en:cols[idx.name_en]||'',
+        vol:parseInt(cols[idx.vol])||0,price:parseInt(cols[idx.price])||0,
+        family:'未分类',perfumer:'',top:[],mid:[],base:[],
+        icon:ICONS[i%ICONS.length],recommended:false
+      };
+      if(p.brand_cn||p.brand_en||p.name_cn||p.name_en){perfumes.push(p);added++;}
+    }
+    save(); updateStats(); filterCards();
+    alert(`✓ 成功导入 ${added} 瓶香水！`);
+    closeModal('importModal');
+  };
+  reader.readAsText(file,'UTF-8');
+}
+
+updateStats(); filterCards(); loadWeather();
+</script>
+</body>
+</html>
